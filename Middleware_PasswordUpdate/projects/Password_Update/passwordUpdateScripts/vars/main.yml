@@ -120,16 +120,16 @@ LOG_DIR: "{{WAR_FILE_DIR}}/logs"
 
 
 ############Passwords#####################
-auduser_pass: 'NGY0ZjA0YjVhOWUxODJkNGZmZTc5ZmMxNGVlNDliZGYK'
-coguser_pass: 'NTIxNjVmZjZmNjNmMTY1ZTAzYWQ1N2U2NGZiNDJlZjgK'
-rwsuser_pass: 'OGJmZTVjY2ZkMGM4YjdhYTkxNTkzN2QxZThmNDY1ZmIK'
-rwsadm_pass: 'OTE3NjkxNTQzNmY4OWU1ODBlYzQ5ODFkMTQ1Y2Y3NWUK'
-rtmuser_pass: 'NzczOTc2ZjM2MTA5Nzg4MWM1Y2Y0ZDU2ZDliNmMyZjMK'
-rtmadm_pass: 'ZjExZDgzMTVkYjljNTQxMjQyYWJmMjJmZGNkMGFhYTQK'
-cogadm_pass: 'ZmEyZmJiMTg5Y2ZlNjc2NzBhMTZlMjE4ZjIzYjM3MzgK'
-datareader_pass: 'Nzg2NmQxNTc0MDMzMDM5YWRmNmQ3NjEyNjM5YTU2MDUK'
-dasadmin_pass: 'YzFlMjQyNDUyMjA0YzI3YWZhYjQ2MTlhYzRkNzc3ZjgK'
-db2fenc_pass: 'NWQzZTVmZmUyZWQxNjY4ZTYwZjgzYTQzOTJiNjQ2MTYK'
+auduser_pass: 'auduserpassowrdchanged'
+coguser_pass: 'coguserpassowrdchanged'
+rwsuser_pass: 'rwsuserpassowrdchanged'
+rwsadm_pass: 'rwsadmuserpassowrdchanged'
+rtmuser_pass: 'rtmuserpassowrdchanged
+rtmadm_pass: 'rtmadmuserpassowrdchanged'
+cogadm_pass: 'cogadmuserpassowrdchanged'
+datareader_pass: 'datareaderuserpassowrdchanged'
+dasadmin_pass: 'dasadminuseerpassowrdchanged'
+db2fenc_pass: 'db2fencpassowrdchanged'
 monuser_pass: 'NzEwYmQxYWQ4ZTBmMGNhMWQ0OWM0YjI1MjNmYzUzZTgK'
 saasuser_pass: 'NzE1MGZiOTMzOGYyMGM0NWUzNjhkMjgzMzZmZGUyZjIK'
-rfxappuser_pass: 'kunalkunalkunalkunal'
+rfxappuser_pass: 'rfxappuserpassowrdchanged'
