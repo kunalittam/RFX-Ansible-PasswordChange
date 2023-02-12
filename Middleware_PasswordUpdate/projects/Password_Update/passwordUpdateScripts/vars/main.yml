@@ -124,7 +124,7 @@ auduser_pass: 'auduserpassowrdchanged'
 coguser_pass: 'coguserpassowrdchanged'
 rwsuser_pass: 'rwsuserpassowrdchanged'
 rwsadm_pass: 'rwsadmuserpassowrdchanged'
-rtmuser_pass: 'rtmuserpassowrdchanged
+rtmuser_pass: 'rtmuserpassowrdchanged'
 rtmadm_pass: 'rtmadmuserpassowrdchanged'
 cogadm_pass: 'cogadmuserpassowrdchanged'
 datareader_pass: 'datareaderuserpassowrdchanged'
