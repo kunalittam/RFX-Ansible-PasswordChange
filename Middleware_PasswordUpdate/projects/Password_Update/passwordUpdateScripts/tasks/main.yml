@@ -1,0 +1,6 @@
+---
+- block:
+  - import_tasks: kernelPasswordUpdate.yml
+  - import_tasks: myworkPasswordUpdate.yml
+  - import_tasks: rwsPasswordUpdate.yml
+  when: CLUSTER_NAME is defined
