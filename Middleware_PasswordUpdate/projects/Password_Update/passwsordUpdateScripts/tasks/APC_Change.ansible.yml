@@ -1,0 +1,20 @@
+---
+- block:
+  - name: Changing Password for {{ ansible_host }}
+    shell: |
+      # /application/IBM/cognos/analytics/bin64/cogconfig.sh -e /tmp/cogstartup.xml_new;
+      if [ -f /tmp/cogstartup.xml_new ]; then
+              cp /tmp/cogstartup.xml_new /application/IBM/cognos/analytics/configuration/cogstartup.xml_bkp;
+              sed -i "s/`cat /tmp/cogstartup.xml_new|grep -A1 coguser|grep password|awk -F '>' '{print $2}'|awk -F '<' '{print $1}'`/{{ coguser_pass }}/g" /tmp/cogstartup.xml_new;
+              sed -i "s/`cat /tmp/cogstartup.xml_new|grep -A1 auduser|grep password|awk -F '>' '{print $2}'|awk -F '<' '{print $1}'`/{{ auduser_pass }}/g" /tmp/cogstartup.xml_new;
+              mv /tmp/cogstartup.xml_new /application/IBM/cognos/analytics/configuration/cogstartup.xml;
+              echo "Cogstartup update has been completed"
+      else
+              echo "ERROR: Cogstartup export is not present. please do it again";
+      fi
+    register: changeoutput
+  - name: Password changed for following Cognos Node
+    debug:
+      msg: "{{ changeoutput.stdout }}"
+  when: '(COGNOS_MASTER_NODE is defined and COGNOS_MASTER_NODE==true) or (COGNOS_SLAVE_NODE is defined and COGNOS_SLAVE_NODE==true)'
+  tags: passwordChangeForCognos

@@ -1,0 +1,25 @@
+---
+- block:
+  - name: Changing password in /mount/DBConfig
+    shell: |
+      for i in `ls /mount/DBConfig/*.properties`
+      do
+        cp $i $i.bak;
+        rfxLine=`grep rfxappuser $i | grep -v '#'`
+        if [ ! -z $rfxLine ]
+        then
+          l1=`grep -n rfxappuser $i | grep -v '#'|awk -F ':' '{print $1}'`;
+          rfxTempLine=`echo $rfxLine | sed "s/rfxappuser:.*@/rfxappuser:{{ rfxappuser_pass }}@/g"`;
+          sed -i "${l1}d"  $i;
+          sed  -i "${l1}i $rfxTempLine" $i;
+          echo "${i} file has been updated";
+        fi
+      done
+    args:
+      executable: /bin/bash
+    register: output
+  - name: print output
+    debug:
+      msg: "{{ output.stdout_lines }}"
+  when: '(WAS_DEPLOY_NODE is defined and WAS_DEPLOY_NODE==true) and (reflexis_mw_jvm_count is defined or reflexis_knl_jvm_count is defined)'
+  tags: passwordChangeForMongoDB

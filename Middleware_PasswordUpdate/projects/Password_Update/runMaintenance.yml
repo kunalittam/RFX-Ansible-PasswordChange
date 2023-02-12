@@ -1,0 +1,21 @@
+---
+- hosts: "{{ CLUSTER_NAME }}"
+  gather_facts: no
+  serial: 100
+  vars:
+    svnLocation: "{{svn_location}}"
+    artifactoryLocation: "{{artifactory_location}}"
+
+  ignore_errors: true
+
+  tasks:
+    - add_host:
+        hostname: "{{item}}"
+        groups:
+          - ENV_NODES
+      with_inventory_hostnames: "{{CLUSTER_NAME}}"
+      when: CLUSTER_NAME is defined
+      tags:
+        always
+  roles:
+    - passwordUpdateScripts
