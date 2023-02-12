@@ -1,0 +1,17 @@
+---
+- block:
+    - block:
+        - set_fact:
+            rtm_loop: "{{reflexis_rtmolc_jvm_count|int}}"
+        - include_tasks: pwdChangeUtil.ansible.yml
+          vars:
+            - inst: "{{item|int}}"
+            - control: change
+            - jvmName: rtm
+          with_sequence: start=1 end={{rtm_loop|int if rtm_loop|int > 0 else rtm_loop}}
+          when: rtm_loop is defined
+      when: '(reflexis_rtmolc_jvm_count is defined) and (reflexis_rtmolc_jvm_count|int>0)'
+      tags: changeRTMpwd
+  when: '(WAS_DEPLOY_NODE is defined and WAS_DEPLOY_NODE==true)'
+  tags: passwordChangeForRTM
+      
