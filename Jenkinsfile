@@ -12,7 +12,7 @@ properties([
                 fallbackScript: [
                     classpath: [],
                     sandbox: false,
-                    script: 'return [\'ERROR1\']'
+                    script: 'return [\'ERROR\']'
                 ],
                 script: [
                     classpath: [],
@@ -289,7 +289,7 @@ pipeline {
                 extensions: [[$class: 'RelativeTargetDirectory', 
                 relativeTargetDir: "${WORKSPACE}"], 
                 [$class: 'CleanBeforeCheckout']], 
-                userRemoteConfigs: [[credentialsId: 'kunalpersonal', url: 'https://github.com/kunalittam/automation.git']]])
+                userRemoteConfigs: [[credentialsId: 'kunalpersonal', url: 'https://github.com/kunalittam/RFX-Ansible-PasswordChange.git']]])
             }//steps
         }//stage
         stage ('Ansible Apply') {
