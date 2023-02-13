@@ -307,6 +307,7 @@ pipeline {
                     if (! params.PASSWORDS.isEmpty())
                     {
                         echo "Passwords are as follows:-\n ${PASSWORDS}"
+                        writeFile file: '\\tmp\\passwordtest.yml', text: '${PASSWORDS}'
                     }
                 }
             }
@@ -334,7 +335,7 @@ pipeline {
                 ansiblePlaybook forks: 1000,
                     colorized: true,
                     disableHostKeyChecking: true, 
-                    extras: "-e \" ${extra_vars} \", \" ${PASSWORDS} \"",
+                    extras: "-e \" ${extra_vars} \"",
                     installation: 'ansible', 
                     inventory: '/application/ansible/inventory/${ENV_TYPE}/${CLUSTER_NAME}/${Application}', 
                     playbook: "${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/${playbook}",
