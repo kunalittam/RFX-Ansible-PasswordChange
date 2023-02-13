@@ -124,11 +124,12 @@ properties([
                 ]
             ]
         ],
+        text(name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the passowrd in single codes'),
         [
             $class: 'CascadeChoiceParameter',
             choiceType: 'PT_SINGLE_SELECT',
             referencedParameters: 'SNOWTICKET',
-            description: "wasCheckProcess - Check how many processes are running on Cluster. appHealth - Check JVM's/Web health. wasBiweeklyMaintenance - Application recycles with/without deployment. wasBiweeklyMaintenanceSTOP - Application stop with/without deployment. wasBiweeklyMaintenanceSTART - Start the application environment.  rollingRestartServers - Rolling restarts for the application CLUSTER",
+            description: "Module of which password to be changed",
             name: 'JOB_NAME',
             script: [
                 $class: 'GroovyScript',
