@@ -306,7 +306,7 @@ pipeline {
                 script {
                     if (! params.PASSWORDS.isEmpty())
                     {
-                        echo -e "Passwords are as follows:-\n ${PASSWORDS}"
+                        echo "Passwords are as follows:-\n ${PASSWORDS}"
                     }
                 }
             }
