@@ -248,7 +248,7 @@ pipeline {
 
                 addShortText(border: 0, text: "Application=" + Application, background: "bisque", color: "black")
                 addShortText(border: 0, text: "tags=" + tags, background: "burlyWood", color: "black")  
-                addShortText(border: 0, text: "playbook" + playbook, background: "brown", color: "white") 
+                addShortText(border: 0, text: "playbook:-" + playbook, background: "brown", color: "white") 
                 if ( ! params.SNOWTICKET.isEmpty()){
                     addShortText(border: 0, text: "SNOWTICKET=" + SNOWTICKET, background: "green", color: "black")
                 }
