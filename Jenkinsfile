@@ -209,7 +209,7 @@ pipeline {
             }
             steps {
                 script {
-                    addShortText(border: 0, text: "ENVIRONMENT=" + ENV_TYPE)
+                    addShortText(border: 0, text: "ENVIRONMENT\=" + ENV_TYPE, background: "azure", color: "black")
                     addShortText(border: 0, text: "CLUSTER_NAME=" + CLUSTER_NAME, background: "beige", color: "black")                    
                     if (Application.contains("KERNEL") || Application.contains("MYWORK")){
                         cluster1=CLUSTER_NAME
