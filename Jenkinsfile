@@ -293,6 +293,24 @@ pipeline {
                 userRemoteConfigs: [[credentialsId: 'kunalpersonal', url: 'https://github.com/kunalittam/RFX-Ansible-PasswordChange.git']]])
             }//steps
         }//stage
+        stage ('Get Passwords') {
+            agent{
+                label 'ansible'
+            }
+            when {
+                expression {
+                    !skipRemainingStages
+                }
+            }
+            steps {
+                script {
+                    if (! params.PASSWORDS.isEmpty())
+                    {
+                        echo -e "Passwords are as follows:-\n ${PASSWORDS}"
+                    }
+                }
+            }
+        }
         stage ('Ansible Apply') {
             agent{
                 label 'ansible'
