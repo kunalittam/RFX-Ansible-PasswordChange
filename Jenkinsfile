@@ -356,7 +356,7 @@ pipeline {
                 script {
                     if (! params.PASSWORDS.isEmpty())
                     {
-                        rm "passwordtest.yml"
+                        sh "rm passwordtest.yml"
                         sh "ls -l"
                     }
                 }
