@@ -307,7 +307,7 @@ pipeline {
                     if (! params.PASSWORDS.isEmpty())
                     {
                         echo "Passwords are as follows:-\n ${PASSWORDS}"
-                        writeFile file: '\\tmp\\passwordtest.yml', text: '${PASSWORDS}'
+                        writeFile (file: '\\tmp\\passwordtest.yml', text: '${PASSWORDS}')
                     }
                 }
             }
