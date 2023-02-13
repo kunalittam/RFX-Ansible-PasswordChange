@@ -206,9 +206,7 @@ pipeline {
                 script {
                     if (! params.PASSWORDS.isEmpty())
                     {
-                        echo "Passwords are as follows:-\n ${PASSWORDS}"
                         writeFile (file: "passwordtest.yml", text: "${PASSWORDS}")
-                        sh "ls -l"
                     }
                 }
             }
@@ -257,7 +255,6 @@ pipeline {
                     if (! params.PASSWORDS.isEmpty())
                     {
                         sh "rm passwordtest.yml"
-                        sh "ls -l"
                     }
                 }
             }
