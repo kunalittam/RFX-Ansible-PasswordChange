@@ -343,5 +343,24 @@ pipeline {
                     tags: "${tags}"
             }            
         }
+        stage ('Delete Passwords') {
+            agent{
+                label 'ansible'
+            }
+            when {
+                expression {
+                    !skipRemainingStages
+                }
+            }
+            steps {
+                script {
+                    if (! params.PASSWORDS.isEmpty())
+                    {
+                        rm "passwordtest.yml"
+                        sh "ls -l"
+                    }
+                }
+            }
+        }
     }
 }
