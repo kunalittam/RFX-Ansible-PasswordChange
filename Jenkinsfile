@@ -209,8 +209,8 @@ pipeline {
             }
             steps {
                 script {
-                    addShortText(border: 0, text: "ENVIRONMENT/=" + ENV_TYPE, background: "azure", color: "black")
-                    addShortText(border: 0, text: "CLUSTER_NAME=" + CLUSTER_NAME, background: "beige", color: "black")                    
+                    addShortText(border: 0, text: "ENVIRONMENT:-" + ENV_TYPE, background: "azure", color: "black")
+                    addShortText(border: 0, text: "CLUSTER_NAME:-" + CLUSTER_NAME, background: "beige", color: "black")                    
                     if (Application.contains("KERNEL") || Application.contains("MYWORK")){
                         cluster1=CLUSTER_NAME
                         CLUSTER_NAME="all"
@@ -246,14 +246,14 @@ pipeline {
                         extra_vars="CLUSTER_NAME=${CLUSTER_NAME}"
                     }
 
-                addShortText(border: 0, text: "Application=" + Application, background: "bisque", color: "black")
-                addShortText(border: 0, text: "tags=" + tags, background: "burlyWood", color: "black")  
-                addShortText(border: 0, text: "playbook=" + playbook, background: "brown", color: "white") 
+                addShortText(border: 0, text: "Application:-" + Application, background: "bisque", color: "black")
+                addShortText(border: 0, text: "tags:-" + tags, background: "burlyWood", color: "black")  
+                addShortText(border: 0, text: "playbook:-" + playbook, background: "brown", color: "white") 
                 if ( ! params.SNOWTICKET.isEmpty()){
-                    addShortText(border: 0, text: "SNOWTICKET=" + SNOWTICKET, background: "green", color: "black")
+                    addShortText(border: 0, text: "SNOWTICKET:-" + SNOWTICKET, background: "green", color: "black")
                 }
                 if (! skipRemainingStages){
-                    addShortText(border: 0, text: "extra_vars=\"" + extra_vars + "\"", background: "CadetBlue", color: "white")
+                    addShortText(border: 0, text: "extra_vars:-\"" + extra_vars + "\"", background: "CadetBlue", color: "white")
                 }    
                 
                 }//script
