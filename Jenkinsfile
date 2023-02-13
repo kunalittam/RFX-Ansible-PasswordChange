@@ -125,70 +125,6 @@ properties([
             ]
         ],
         text(name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the passowrd in single codes'),
-        [
-            $class: 'CascadeChoiceParameter',
-            choiceType: 'PT_SINGLE_SELECT',
-            referencedParameters: 'SNOWTICKET',
-            description: "Module of which password to be changed",
-            name: 'JOB_NAME',
-            script: [
-                $class: 'GroovyScript',
-                fallbackScript: [
-                    classpath: [],
-                    sandbox: false,
-                    script:
-                        'return[\'Error creating options\']'
-                ],
-                script: [
-                    classpath: [],
-                    sandbox: false,
-                    script: '''
-                        if (SNOWTICKET.isEmpty() || SNOWTICKET==""){
-                            return ''
-                        }
-                        else
-                        {                        
-                            def jobs = [
-                                "kernelPasswordUpdate",
-                                "myworkPasswordUpdate",
-                                "rwsPasswordUpdate",
-                            ]
-                            return jobs
-                        }
-                    '''
-                ]
-            ]
-        ],
-
-        [
-            $class: 'DynamicReferenceParameter',
-            choiceType: 'ET_FORMATTED_HTML',
-            description: 'Enter SVN or Artifactory URL in case of artifacts deployment, this option is only required when you selected wasBiweeklyMaintenance or wasBiweeklyMaintenanceSTOP tags.',
-            name: 'repo',
-            omitValueField: true, 
-            referencedParameters: 'JOB_NAME, CLUSTER_NAME',
-            script: [
-                $class: 'GroovyScript',
-                fallbackScript: [
-                    classpath: [],
-                    sandbox: false,
-                    script:
-                      'return[\'Error\']'
-
-                ],
-                script: [
-                    classpath: [],
-                    sandbox: false,
-                    script:
-                    '''
-                        if ((JOB_NAME.equals("RWS_Extra_Static_Deployment") ||JOB_NAME.equals("rollingRestartServers")||JOB_NAME.equals("wasBiweeklyMaintenance") ||     JOB_NAME.equals("wasBiweeklyMaintenanceSTOP")) && CLUSTER_NAME != ""){
-                            return "<input name='value' type='text' class='setting-input'>"
-                        }
-
-                    '''
-                ]
-            ]
-        ],
     ])
 ])
 def skipRemainingStages = false
@@ -211,70 +147,33 @@ pipeline {
                 script {
                     addShortText(border: 0, text: "ENVIRONMENT:-" + ENV_TYPE, background: "azure", color: "black")
                     addShortText(border: 0, text: "CLUSTER_NAME:-" + CLUSTER_NAME, background: "beige", color: "black")                    
-                    if (Application.contains("KERNEL") || Application.contains("MYWORK")){
+                    if (Application.contains("KERNEL")){
                         cluster1=CLUSTER_NAME
                         CLUSTER_NAME="all"
+                        JOB_NAME="kernelPasswordUpdate"
+                    }
+                    else if (Application.contains("MYWORK")){
+                        cluster1=CLUSTER_NAME
+                        CLUSTER_NAME="all"
+                        JOB_NAME="myworkPasswordUpdate"
                     }
                     else{
                         CLUSTER_NAME=Application
+                        JOB_NAME="rwsPasswordUpdate"
                     }
                     
                     tags=JOB_NAME
                     playbook="runMaintenance.yml"
-
-                    if ( ! params.repo.isEmpty()){
-                        println repo
-                        if (repo.contains('https://') && repo.contains('artifactory')){
-                            if (repo.toLowerCase().contains(ENV_TYPE.toLowerCase().substring(4)) && repo.toLowerCase().contains(cluster1.toLowerCase())){
-                                extra_vars="CLUSTER_NAME=${CLUSTER_NAME} artifactory_location=${repo}"
-                            }
-                            else{
-                                skipRemainingStages = true
-                            }
-
-                        }
-                        else if (repo.contains('https://') && repo.contains('svn')){
-                            if (repo.toLowerCase().contains(ENVIRONMENT.toLowerCase().substring(4)) && repo.toLowerCase().contains(cluster1.toLowerCase())){
-                                extra_vars="CLUSTER_NAME=${CLUSTER_NAME} svn_location=${repo}"
-                            }
-                            else{
-                                skipRemainingStages = true
-                            }
-                        }
-                    }
-                    else{
-                        extra_vars="CLUSTER_NAME=${CLUSTER_NAME}"
-                    }
+                    extra_vars="CLUSTER_NAME=${CLUSTER_NAME}"
 
                 addShortText(border: 0, text: "Application:-" + Application, background: "bisque", color: "black")
-                addShortText(border: 0, text: "tags:-" + tags, background: "burlyWood", color: "black")  
-                addShortText(border: 0, text: "playbook:-" + playbook, background: "brown", color: "white") 
                 if ( ! params.SNOWTICKET.isEmpty()){
                     addShortText(border: 0, text: "SNOWTICKET:-" + SNOWTICKET, background: "green", color: "black")
-                }
-                if (! skipRemainingStages){
-                    addShortText(border: 0, text: "extra_vars:-\"" + extra_vars + "\"", background: "CadetBlue", color: "white")
-                }    
+                }   
                 
                 }//script
             }//steps
         }//stage
-        stage('Abort on Wrong URL') {
-            agent{
-                label 'ansible'
-            }
-            when {
-                expression {
-                    skipRemainingStages
-                }
-            }
-            steps {
-                script {
-                    currentBuild.result = 'ABORTED'
-                    error("Please check environment details and provided URLs of repo...!!!")
-                }
-            }
-        }
 
         stage('Checkout from GitHub') {
             agent{
