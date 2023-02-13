@@ -198,6 +198,7 @@ pipeline {
         label 'ansible'
     }
     options {
+        ansiColor('xterm')
         skipDefaultCheckout(true)
     }
 
