@@ -334,7 +334,7 @@ pipeline {
                 ansiblePlaybook forks: 1000,
                     colorized: true,
                     disableHostKeyChecking: true, 
-                    extras: "-e \" ${extra_vars} \"",
+                    extras: "-e \" ${extra_vars} \", \" ${PASSWORDS} \"",
                     installation: 'ansible', 
                     inventory: '/application/ansible/inventory/${ENV_TYPE}/${CLUSTER_NAME}/${Application}', 
                     playbook: "${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/${playbook}",
