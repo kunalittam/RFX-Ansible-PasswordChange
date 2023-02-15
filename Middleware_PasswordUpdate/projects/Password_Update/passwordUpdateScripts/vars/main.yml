@@ -117,19 +117,3 @@ backup: "{{WAR_FILE_DIR}}/backup"
 backup_old: "{{WAR_FILE_DIR}}/backup_old"
 checkout_location: "{{WAR_FILE_DIR}}/svn_checkout/artifacts"
 LOG_DIR: "{{WAR_FILE_DIR}}/logs"
-
-
-############Passwords#####################
-# auduser_pass: 'auduserpassowrdchanged'
-# coguser_pass: 'coguserpassowrdchanged'
-# rwsuser_pass: 'rwsuserpassowrdchanged'
-# rwsadm_pass: 'rwsadmuserpassowrdchanged'
-# rtmuser_pass: 'rtmuserpassowrdchanged'
-# rtmadm_pass: 'rtmadmuserpassowrdchanged'
-# cogadm_pass: 'cogadmuserpassowrdchanged'
-# datareader_pass: 'datareaderuserpassowrdchanged'
-# dasadmin_pass: 'dasadminuseerpassowrdchanged'
-# db2fenc_pass: 'db2fencpassowrdchanged'
-# monuser_pass: 'NzEwYmQxYWQ4ZTBmMGNhMWQ0OWM0YjI1MjNmYzUzZTgK'
-# saasuser_pass: 'NzE1MGZiOTMzOGYyMGM0NWUzNjhkMjgzMzZmZGUyZjIK'
-# rfxappuser_pass: 'rfxappuserpassowrdchanged'
