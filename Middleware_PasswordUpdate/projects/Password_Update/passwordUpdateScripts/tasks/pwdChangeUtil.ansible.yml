@@ -80,7 +80,7 @@
             sed  -i "${i}i ${rwsadmTempLine}" $j;
             sed -i "s/^$i://g" $j
           done
-          echo $i 'file has been updated' ;
+          echo $j 'file has been updated' ;
         fi;
       done
     register: changeoutput
