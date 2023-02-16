@@ -4,7 +4,7 @@
   - name: Getting JVM Name
     shell: "ls -l /application/IBM/WASProfiles/servers/ | grep -w {{jvmName}}-inst[0-9][0-9] | egrep '^d' | awk '{print $(NF)}' |grep inst0{{inst}}"
     register: shellOut
-  - name: Changing Password for {{ shellOut.stdout }}
+  - name: Changing Password for {{jvmName|upper}}-INST0{{inst|upper}}
     shell: |
       rtmadm_NEW_PWD={{ rtmadm_pass }}
       cogadm_NEW_PWD={{ cogadm_pass }}

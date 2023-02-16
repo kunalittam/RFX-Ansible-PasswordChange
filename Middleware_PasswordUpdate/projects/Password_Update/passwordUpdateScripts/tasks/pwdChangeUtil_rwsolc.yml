@@ -4,7 +4,7 @@
   - name: Getting JVM Name
     shell: "ls -l /application/IBM/WASProfiles/servers/ | grep -w {{jvmName}}-inst[0-9][0-9] | egrep '^d' | awk '{print $(NF)}' |grep inst0{{inst}}"
     register: shellOut
-  - name: Changing Password for {{ shellOut.stdout }}
+  - name: Changing Password for {{jvmName|upper}}-INST0{{inst|upper}}
     shell: |
       rwsadm_NEW_PWD={{ rwsadm_pass }}
       for i in `find /application/IBM/WASProfiles/servers/{{ shellOut.stdout }} -name 'datasource_config.xml' `; do
