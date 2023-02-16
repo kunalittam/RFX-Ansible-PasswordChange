@@ -206,7 +206,7 @@ pipeline {
                 script {
                     if (! params.PASSWORDS.isEmpty())
                     {
-                        writeFile (file: "passwordtest.yml", text: "${PASSWORDS}")
+                        writeFile (file: ".passwordtest.yml", text: "${PASSWORDS}")
                     }
                 }
             }
@@ -234,7 +234,7 @@ pipeline {
                 ansiblePlaybook forks: 1000,
                     colorized: true,
                     disableHostKeyChecking: true, 
-                    extras: "-e \" ${extra_vars} \" --extra-vars=@passwordtest.yml ",
+                    extras: "-e \" ${extra_vars} \" --extra-vars=@.passwordtest.yml ",
                     installation: 'ansible', 
                     inventory: '/application/ansible/inventory/${ENV_TYPE}/${CLUSTER_NAME}/${Application}', 
                     playbook: "${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/${playbook}",
@@ -254,7 +254,7 @@ pipeline {
                 script {
                     if (! params.PASSWORDS.isEmpty())
                     {
-                        sh "rm passwordtest.yml"
+                        sh "rm .passwordtest.yml"
                     }
                 }
             }
