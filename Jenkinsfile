@@ -275,6 +275,7 @@ pipeline {
                     {
                         sh """
                             set +x
+                            pwd
                             rm .passwordtest.yml
                         """
                     }
