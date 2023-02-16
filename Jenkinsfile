@@ -203,7 +203,7 @@ pipeline {
             }//steps
         }//stage
         stage ('Get Passwords') {
-            aagent{
+            agent{
                 label {
                     label 'ansible'
                     customWorkspace "/application/${env.BUILD_NUMBER}"
@@ -225,7 +225,7 @@ pipeline {
             }
         }
         stage ('Ansible Apply') {
-            aagent{
+            agent{
                 label {
                     label 'ansible'
                     customWorkspace "/application/${env.BUILD_NUMBER}"
