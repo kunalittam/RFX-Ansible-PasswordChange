@@ -17,12 +17,12 @@
           sed -i "${l1}d"  /mount//DBConfig/EPP.properties;
           sed  -i "${l1}i ${rwsadmTempLine}" /mount//DBConfig/EPP.properties;
         fi
-        echo "EPP.properties updated for rwsadm and cogadm"
+        echo "EPP.properties file updated for rwsadm and cogadm"
       else
         echo "/mount/DBConfig/EPP.properties file is not present"
       fi
     register: changeoutput
-  - name: Password changed for FM_UTILITY
+  - name: Password changed in EPP.properties
     debug:
       msg: "{{ changeoutput.stdout }}"
   when: '(WAS_DEPLOY_NODE is defined and WAS_DEPLOY_NODE==true)'
