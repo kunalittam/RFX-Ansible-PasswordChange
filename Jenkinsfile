@@ -246,7 +246,7 @@ pipeline {
                         sh """
                             set +x
                             pwd
-                            ls -lrt
+                            ls -lrat
                             rm .passwordtest.yml
                         """
                     }
