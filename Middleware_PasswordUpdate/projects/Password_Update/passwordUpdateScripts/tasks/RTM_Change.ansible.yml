@@ -3,7 +3,7 @@
     - block:
         - set_fact:
             rtm_loop: "{{reflexis_rtmolc_jvm_count|int}}"
-        - include_tasks: pwdChangeUtil.ansible.yml
+        - include_tasks: pwdChangeUtil_rtm.yml
           vars:
             - inst: "{{item|int}}"
             - control: change
@@ -16,7 +16,7 @@
     - block:
         - set_fact:
             rtm_loop: "{{reflexis_rtmbth_jvm_count|int}}"
-        - include_tasks: pwdChangeUtil.ansible.yml
+        - include_tasks: pwdChangeUtil_rtm.yml
           vars:
             - inst: "{{item|int}}"
             - control: change

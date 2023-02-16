@@ -1,0 +1,27 @@
+# Changing Password for RWSBTH JVMs
+---
+- block: 
+  - name: Getting JVM Name
+    shell: "ls -l /application/IBM/WASProfiles/servers/ | grep -w {{jvmName}}-inst[0-9][0-9] | egrep '^d' | awk '{print $(NF)}' |grep inst0{{inst}}"
+    register: shellOut
+  - name: Changing Password for {{ shellOut.stdout }}
+    shell: |
+      rwsadm_NEW_PWD={{ rwsadm_pass }}
+      for i in `find /application/IBM/WASProfiles/servers/{{ shellOut.stdout }} -name 'datasource_config.xml' `; do
+      if [ -f $i ]
+      then
+      cp $i $i.bak;
+      rwsadm_passline=`grep 'id="rwsUserInfo"' $i | grep  -v '!--'`;
+      l1=`grep -n 'id="rwsUserInfo"' $i |  grep -v '!--' |awk -F ':' '{print $1}'`;
+      rwsTempLine=`echo $rwsadm_passline|sed "s/password=\".*\"/password=\""$rwsadm_NEW_PWD\""/g"`;
+      sed -i "${l1}d" $i;
+      sed  -i "${l1}i ${rwsTempLine}" $i;
+      echo $i 'file has been updated' ;
+      fi;
+      done
+    register: changeoutput
+
+  - name: Password Change Status
+    debug:
+      msg: "{{ changeoutput.stdout }}"
+  when: '(jvmName is defined and jvmName == "rwsbth")'

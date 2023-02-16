@@ -5,7 +5,7 @@
       block:
         - set_fact:
             rwsolc_loop: "{{reflexis_rwsolc_jvm_count|int}}"
-        - include_tasks: pwdChangeUtil.ansible.yml
+        - include_tasks: pwdChangeUtil_rwsolc.yml
           vars:
             - inst: "{{item|int}}"
             - control: change
@@ -21,7 +21,7 @@
       block:
         - set_fact:
             rwsbth_loop: "{{reflexis_rwsbth_jvm_count|int}}"
-        - include_tasks: pwdChangeUtil.ansible.yml
+        - include_tasks: pwdChangeUtil_rwsbth.yml
           vars:
             - inst: "{{item|int}}"
             - control: change

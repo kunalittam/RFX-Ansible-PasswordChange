@@ -1,0 +1,53 @@
+---
+# Changing Password for RAR JVMs
+- block:
+  - name: Getting JVM Name
+    shell: "ls -l /application/IBM/WASProfiles/servers/ | grep -w {{jvmName}}-inst[0-9][0-9] | egrep '^d' | awk '{print $(NF)}' |grep inst0{{inst}}"
+    register: shellOut
+  - name: Changing Password for {{ shellOut.stdout }}
+    shell: |
+      rtmadm_NEW_PWD={{ rtmadm_pass }}
+      cogadm_NEW_PWD={{ cogadm_pass }}
+      rwsuser_NEW_PWD={{ rwsuser_pass }}
+      rwsadm_NEW_PWD={{ rwsadm_pass }}
+      for j in `find /application/IBM/WASProfiles/servers/{{ shellOut.stdout }} -name 'datasource_config.xml' `; do
+        if [ -f $j ]
+        then 
+          cp $j $j.bak;
+          for i in `grep -n rtmadm $j | awk -F : '{print $1}'`; do
+            rtmpassline=`grep -n 'user="rtmadm"' $j|  grep -v '!--' |grep ^$i`
+            rtmTempLine=`echo $rtmpassline|sed "s/password=\".*\"/password=\""$rtmadm_NEW_PWD\""/g"`;
+            sed -i "${i}d" $j;
+            sed  -i "${i}i ${rtmTempLine}" $j;
+            sed -i "s/^$i://g" $j
+          done
+          for i in `grep -n cogadm $j | awk -F : '{print $1}'`; do
+            cogpassline=`grep -n 'user="cogadm"' $j|  grep -v '!--' |grep ^$i`
+            cogTempLine=`echo $cogpassline|sed "s/password=\".*\"/password=\""$cogadm_NEW_PWD\""/g"`;
+            sed -i "${i}d" $j;
+            sed  -i "${i}i ${cogTempLine}" $j;
+            sed -i "s/^$i://g" $j
+          done
+          for i in `grep -n rwsuser $j | awk -F : '{print $1}'`; do
+            rwsuserpassline=`grep -n 'user="rwsuser"' $j|  grep -v '!--' |grep ^$i`
+            rwsuserTempLine=`echo $rwsuserpassline|sed "s/password=\".*\"/password=\""$rwsuser_NEW_PWD\""/g"`;
+            sed -i "${i}d" $j;
+            sed  -i "${i}i ${rwsuserTempLine}" $j;
+            sed -i "s/^$i://g" $j
+          done
+          for i in `grep -n rwsadm $j | awk -F : '{print $1}'`; do
+            rwsadmpassline=`grep -n 'user="rwsadm"' $j|  grep -v '!--' |grep ^$i`
+            rwsadmTempLine=`echo $rwsadmpassline|sed "s/password=\".*\"/password=\""$rwsadm_NEW_PWD\""/g"`;
+            sed -i "${i}d" $j;
+            sed  -i "${i}i ${rwsadmTempLine}" $j;
+            sed -i "s/^$i://g" $j
+          done
+          echo $j 'file has been updated' ;
+        fi;
+      done
+    register: changeoutput
+
+  - name: Password Change Status
+    debug:
+      msg: "{{ changeoutput.stdout }}"
+  when: '(jvmName is defined and jvmName == "rar")'

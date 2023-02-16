@@ -1,0 +1,34 @@
+# Changing Password for RTM JVMs
+---
+- block:
+  - name: Getting JVM Name
+    shell: "ls -l /application/IBM/WASProfiles/servers/ | grep -w {{jvmName}}-inst[0-9][0-9] | egrep '^d' | awk '{print $(NF)}' |grep inst0{{inst}}"
+    register: shellOut
+
+  - name: Changing Password for {{ shellOut.stdout }}
+    shell: |
+      rtmadm_NEW_PWD={{ rtmadm_pass }}
+      cogadm_NEW_PWD={{ cogadm_pass }}
+      for i in `find /application/IBM/WASProfiles/servers/{{ shellOut.stdout }} -name 'datasource_config.xml' `; do
+      if [ -f $i ]
+      then
+      cp $i $i.bak;
+      rtmadm_passline=`grep 'id="rtmUserInfo"' $i  |  grep -v '!--'`;
+      l1=`grep -n 'id="rtmUserInfo"' $i |  grep -v '!--' |awk -F ':' '{print $1}'`;
+      rtmTempLine=`echo $rtmadm_passline|sed "s/password=\".*\"/password=\""$rtmadm_NEW_PWD\""/g"`;
+      sed -i "${l1}d" $i;
+      sed  -i "${l1}i ${rtmTempLine}" $i;
+      cogadm_passline=`grep 'id="cogUserInfo"' $i |  grep -v '!--'`;
+      l1=`grep -n 'id="cogUserInfo"' $i |  grep -v '!--' |awk -F ':' '{print $1}'`;
+      cogTempLine=`echo $cogadm_passline|sed "s/password=\".*\"/password=\""$cogadm_NEW_PWD\""/g"`;
+      sed -i "${l1}d" $i;
+      sed  -i "${l1}i ${cogTempLine}" $i;
+      echo $i 'file has been updated' ;
+      fi;
+      done
+    register: changeoutput
+
+  - name: Password Change Status
+    debug:
+      msg: "{{ changeoutput.stdout }}"
+  when: '(jvmName is defined and jvmName == "rtm")'
