@@ -3,9 +3,6 @@
   gather_facts: no
   serial: 100
   vars:
-    svnLocation: "{{svn_location}}"
-    artifactoryLocation: "{{artifactory_location}}"
-
   ignore_errors: true
 
   tasks:
