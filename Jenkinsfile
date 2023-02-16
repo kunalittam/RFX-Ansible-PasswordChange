@@ -131,7 +131,7 @@ def skipRemainingStages = false
 def cluster1=""
 pipeline {
     agent{
-        label {
+        node {
             label 'ansible'
             customWorkspace "/application/${env.BUILD_NUMBER}"
         }
@@ -143,12 +143,6 @@ pipeline {
 
     stages {
         stage('Get variables') {
-            agent{
-                label {
-                    label 'ansible'
-                    customWorkspace "/application/${env.BUILD_NUMBER}"
-                }
-            }
             steps {
                 script {
                     addShortText(border: 0, text: "ENVIRONMENT:-" + ENV_TYPE, background: "azure", color: "black")
@@ -182,12 +176,6 @@ pipeline {
         }//stage
 
         stage('Checkout from GitHub') {
-            agent{
-                label {
-                    label 'ansible'
-                    customWorkspace "/application/${env.BUILD_NUMBER}"
-                }
-            }
             when {
                 expression {
                     !skipRemainingStages
@@ -203,12 +191,6 @@ pipeline {
             }//steps
         }//stage
         stage ('Get Passwords') {
-            agent{
-                label {
-                    label 'ansible'
-                    customWorkspace "/application/${env.BUILD_NUMBER}"
-                }
-            }
             when {
                 expression {
                     !skipRemainingStages
@@ -225,12 +207,6 @@ pipeline {
             }
         }
         stage ('Ansible Apply') {
-            agent{
-                label {
-                    label 'ansible'
-                    customWorkspace "/application/${env.BUILD_NUMBER}"
-                }
-            }
             when {
                 expression {
                     !skipRemainingStages
@@ -258,12 +234,6 @@ pipeline {
             }            
         }
         stage ('Delete Passwords') {
-            agent{
-                label {
-                    label 'ansible'
-                    customWorkspace "/application/${env.BUILD_NUMBER}"
-                }
-            }
             when {
                 expression {
                     !skipRemainingStages
