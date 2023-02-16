@@ -133,7 +133,7 @@ pipeline {
     agent{
         label {
             label 'ansible'
-            customWorkspace "${WORKSPACE}/${env.BUILD_NUMBER}"
+            customWorkspace "/application/${env.BUILD_NUMBER}"
         }
     }
     options {
