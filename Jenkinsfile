@@ -233,26 +233,6 @@ pipeline {
                     tags: "${tags}"
             }            
         }
-        stage ('Delete Passwords') {
-            when {
-                expression {
-                    !skipRemainingStages
-                }
-            }
-            steps {
-                script {
-                    if (! params.PASSWORDS.isEmpty())
-                    {
-                        sh """
-                            set +x
-                            pwd
-                            ls -lrat
-                            rm .passwordtest.yml
-                        """
-                    }
-                }
-            }
-        }
     }
     post {
         always {
