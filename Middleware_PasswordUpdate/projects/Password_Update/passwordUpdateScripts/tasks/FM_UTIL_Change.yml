@@ -8,9 +8,9 @@
         pwdLine=`cat /mount/cognos/FM_UTIL/config.properties | grep  database.password | grep -v '#'`;
         rwsuser=`cat /mount/cognos/FM_UTIL/config.properties | grep  database.user | grep -v '#' | grep rws`;
         if [ -z "$rwsuser" ] ; then
-                pwdTempLine=`echo $pwdLine| sed "s/password.*/password=${cogadm_pass}/g"`;
+                pwdTempLine=`echo $pwdLine| sed "s/password.*/password={{ cogadm_pass }}/g"`;
         else
-                pwdTempLine=`echo $pwdLine| sed "s/password.*/password=${rwsadm_pass}/g"`;
+                pwdTempLine=`echo $pwdLine| sed "s/password.*/password={{ rwsadm_pass }}/g"`;
         fi
         l1=`cat /mount//cognos/FM_UTIL/config.properties | grep -n database.password | grep -v '#' |awk -F ':' '{print $1}'`;
         sed -i "${l1}d" /mount/cognos/FM_UTIL/config.properties;
