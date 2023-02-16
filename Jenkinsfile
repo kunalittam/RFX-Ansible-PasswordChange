@@ -144,7 +144,10 @@ pipeline {
     stages {
         stage('Get variables') {
             agent{
-                label 'ansible'
+                label {
+                    label 'ansible'
+                    customWorkspace "/application/${env.BUILD_NUMBER}"
+                }
             }
             steps {
                 script {
@@ -180,7 +183,10 @@ pipeline {
 
         stage('Checkout from GitHub') {
             agent{
-                label 'ansible'
+                label {
+                    label 'ansible'
+                    customWorkspace "/application/${env.BUILD_NUMBER}"
+                }
             }
             when {
                 expression {
@@ -197,8 +203,11 @@ pipeline {
             }//steps
         }//stage
         stage ('Get Passwords') {
-            agent{
-                label 'ansible'
+            aagent{
+                label {
+                    label 'ansible'
+                    customWorkspace "/application/${env.BUILD_NUMBER}"
+                }
             }
             when {
                 expression {
@@ -216,8 +225,11 @@ pipeline {
             }
         }
         stage ('Ansible Apply') {
-            agent{
-                label 'ansible'
+            aagent{
+                label {
+                    label 'ansible'
+                    customWorkspace "/application/${env.BUILD_NUMBER}"
+                }
             }
             when {
                 expression {
@@ -247,7 +259,10 @@ pipeline {
         }
         stage ('Delete Passwords') {
             agent{
-                label 'ansible'
+                label {
+                    label 'ansible'
+                    customWorkspace "/application/${env.BUILD_NUMBER}"
+                }
             }
             when {
                 expression {
