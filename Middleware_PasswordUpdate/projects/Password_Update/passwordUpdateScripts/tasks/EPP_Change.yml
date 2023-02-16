@@ -1,0 +1,29 @@
+---
+- block:
+  - name: Changing Password in EPP.properties
+    shell: |
+      if [ -f /mount/DBConfig/EPP.properties ]
+      then
+        cp  /mount/DBConfig/EPP.properties /mount/DBConfig/EPP.properties_bkp;
+        l1=`grep -n 'raa.export-db.password' /mount/DBConfig/EPP.properties  |awk -F ':' '{print $1}'`;
+        cogadmTempLine="raa.export-db.password={{ cogadm_pass }}";
+        sed -i "${l1}d"  /mount/DBConfig/EPP.properties;
+        sed  -i "${l1}i ${cogadmTempLine}" /mount/DBConfig/EPP.properties;
+        rwsadmLine=`cat /mount/DBConfig/EPP.properties|grep import-db.password | grep -v '#'`;
+        if [ ! -z "$rwsadmLine" ]
+        then
+          rwsadmTempLine=`echo $rwsadmLine |sed "s/password=.*/password={{ rwsadm_pass }}/g"`
+          l1=`cat /mount//DBConfig/EPP.properties|grep -n import-db.password | grep -v '#' |awk -F ':' '{print $1}'`;
+          sed -i "${l1}d"  /mount//DBConfig/EPP.properties;
+          sed  -i "${l1}i ${rwsadmTempLine}" /mount//DBConfig/EPP.properties;
+        fi
+        echo "EPP.properties updated for rwsadm and cogadm"
+      else
+        echo "/mount/DBConfig/EPP.properties file is not present"
+      fi
+    register: changeoutput
+  - name: Password changed for FM_UTILITY
+    debug:
+      msg: "{{ changeoutput.stdout }}"
+  when: '(WAS_DEPLOY_NODE is defined and WAS_DEPLOY_NODE==true)'
+  tags: passwordChangeForFMUtil
