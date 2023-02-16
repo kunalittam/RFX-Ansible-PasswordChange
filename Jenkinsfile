@@ -133,7 +133,7 @@ pipeline {
     agent{
         node {
             label 'ansible'
-            customWorkspace "/application/${env.BUILD_NUMBER}"
+            customWorkspace "${JENKINS_HOME}/workspace/${JOB_BASE_NAME}/${BUILD_NUMBER}"
         }
     }
     options {
@@ -251,6 +251,11 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
