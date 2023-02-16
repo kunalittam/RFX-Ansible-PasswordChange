@@ -131,7 +131,10 @@ def skipRemainingStages = false
 def cluster1=""
 pipeline {
     agent{
-        label 'ansible'
+        label {
+            label 'ansible'
+            customWorkspace "${WORKSPACE}/${env.BUILD_NUMBER}"
+        }
     }
     options {
         ansiColor('xterm')
@@ -207,6 +210,7 @@ pipeline {
                     if (! params.PASSWORDS.isEmpty())
                     {
                         writeFile (file: ".passwordtest.yml", text: "${PASSWORDS}")
+                        echo "Workspace dir is ${WORKSPACE}"
                     }
                 }
             }
