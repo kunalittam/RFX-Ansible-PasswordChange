@@ -186,7 +186,7 @@ pipeline {
             }
             steps {
                 checkout([$class: 'GitSCM', 
-                branches: [[name: '*/main']], 
+                branches: [[name: '*/test']], 
                 extensions: [[$class: 'RelativeTargetDirectory', 
                 relativeTargetDir: "${WORKSPACE}"], 
                 [$class: 'CleanBeforeCheckout']], 
@@ -254,7 +254,10 @@ pipeline {
                 script {
                     if (! params.PASSWORDS.isEmpty())
                     {
-                        sh "rm .passwordtest.yml"
+                        sh """
+                            set +x
+                            rm .passwordtest.yml
+                        """
                     }
                 }
             }
