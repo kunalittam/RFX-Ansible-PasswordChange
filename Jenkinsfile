@@ -127,7 +127,6 @@ properties([
         text(name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the passowrd in single codes'),
     ])
 ])
-def skipRemainingStages = false
 def cluster1=""
 pipeline {
     agent{
@@ -181,11 +180,6 @@ pipeline {
         }//stage
 
         stage('Checkout from GitHub') {
-            when {
-                expression {
-                    !skipRemainingStages
-                }
-            }
             steps {
                 checkout([$class: 'GitSCM', 
                 branches: [[name: '*/test']], 
@@ -195,28 +189,23 @@ pipeline {
                 userRemoteConfigs: [[credentialsId: 'kunalpersonal', url: 'https://github.com/kunalittam/RFX-Ansible-PasswordChange.git']]])
             }//steps
         }//stage
+        // stage ('Get Passwords') {
+        //     steps {
+        //         script {
+        //             if (! params.PASSWORDS.isEmpty())
+        //             {
+        //                 writeFile (file: ".passwordtest.yml", text: "${PASSWORDS}")
+        //                 echo "Workspace dir is ${WORKSPACE}"
+        //             }
+        //         }
+        //     }
+        // }
         stage ('Get Passwords') {
-            when {
-                expression {
-                    !skipRemainingStages
-                }
-            }
             steps {
-                script {
-                    if (! params.PASSWORDS.isEmpty())
-                    {
-                        writeFile (file: ".passwordtest.yml", text: "${PASSWORDS}")
-                        echo "Workspace dir is ${WORKSPACE}"
-                    }
-                }
+                input message: 'Please create .passwordtest.yml in '${WORKSPACE}'', ok: 'Created'
             }
         }
         stage ('Ansible Apply') {
-            when {
-                expression {
-                    !skipRemainingStages
-                }
-            }
             steps {
                 script {
                 if ( ! extra_vars.isEmpty()){
