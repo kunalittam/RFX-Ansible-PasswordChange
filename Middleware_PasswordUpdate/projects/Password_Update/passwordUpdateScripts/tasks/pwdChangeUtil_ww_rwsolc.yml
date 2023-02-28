@@ -13,7 +13,7 @@
           cp $j $j.bak;
           for i in `grep -n rwsww $j | grep -v '!--'| awk -F : '{print $1}'`; do
             rwswwpassline=`grep -n 'user="rwsww"' $j|  grep -v '!--' |grep ^$i`
-            rwswwTempLine=`echo $rwswwpassline|sed "s/password=\'.*\'/password=\"'$rwsww_NEW_PWD\'"/g"`;
+            rwswwTempLine=`echo $rwswwpassline|sed "s/password=\'.*\'/password=\'$rwsww_NEW_PWD\'/g"`;
             sed -i "${i}d" $j;
             sed  -i "${i}i ${rwswwTempLine}" $j;
             sed -i "s/^$i://g" $j
