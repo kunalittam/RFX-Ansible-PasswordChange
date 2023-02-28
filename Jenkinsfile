@@ -125,7 +125,7 @@ properties([
             ]
         ],
         // text{name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the password in single codes'},
-        extendedChoice defaultValue: 'test', description: '', name: 'Passwords', 'PT_HIDDEN', value: 'test,test2',
+        extendedChoice [defaultValue: 'test', description: '', name: 'Passwords', 'PT_HIDDEN', value: 'test,test2'],
 
     ])
 ])
