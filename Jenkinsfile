@@ -124,7 +124,7 @@ properties([
                 ]
             ]
         ],
-        hidden(name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the password in single codes'),
+        hidden{name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the password in single codes'},
     ])
 ])
 def cluster1=""
