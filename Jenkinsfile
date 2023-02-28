@@ -125,7 +125,7 @@ properties([
             ]
         ],
         // text{name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the password in single codes'},
-        extendedChoice [defaultValue: 'test', description: '', name: 'Passwords', 'PT_HIDDEN', value: 'test,test2'],
+        extendedChoice [multiSelectDelimiter: ',', name: 'Passwords', quoteValue: false, saveJSONParameterToFile: false, type: 'PT_HIDDEN', visibleItemCount: 5],
 
     ])
 ])
