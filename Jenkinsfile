@@ -157,7 +157,7 @@ pipeline {
                         CLUSTER_NAME="all"
                         JOB_NAME="myworkPasswordUpdate"
                     }
-                    else if (Application.contains("WWRWS*")){
+                    else if (Application.contains("WWRWS")){
                         cluster1=CLUSTER_NAME
                         CLUSTER_NAME=Application
                         JOB_NAME="wwrwsPasswordUpdate"
