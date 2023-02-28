@@ -1,0 +1,34 @@
+---
+- block:    
+  - block:
+    - name: PASSWORD CHANGE FOR WW-RWSOLC
+      block:
+        - set_fact:
+            rwsolc_loop: "{{reflexis_rwsolc_jvm_count|int}}"
+        - include_tasks: pwdChangeUtil_ww_rwsolc.yml
+          vars:
+            - inst: "{{item|int}}"
+            - control: change
+            - jvmName: wwrwsolc
+          with_sequence: start=1 end={{rwsolc_loop|int if rwsolc_loop|int > 0 else rwsolc_loop}}
+          when: rwsolc_loop is defined
+      when: '(reflexis_rwsolc_jvm_count is defined) and (reflexis_rwsolc_jvm_count|int>0)'
+      tags: changeWWRWSOLCpwd
+    when: '(WAS_NODE is defined and WAS_NODE==true)'
+
+  - block:
+    - name: PASSWORD CHANGE FOR WW-RWSBTH
+      block:
+        - set_fact:
+            rwsbth_loop: "{{reflexis_rwsbth_jvm_count|int}}"
+        - include_tasks: pwdChangeUtil_ww_rwsbth.yml
+          vars:
+            - inst: "{{item|int}}"
+            - control: change
+            - jvmName: wwrwsbth
+          with_sequence: start=1 end={{rwsbth_loop|int if rwsbth_loop|int > 0 else rwsbth_loop}}
+          when: rwsbth_loop is defined
+      when: '(reflexis_rwsbth_jvm_count is defined) and (reflexis_rwsbth_jvm_count|int>0)'
+      tags: changeWWRWSBTHpwd
+    when: '(WAS_NODE is defined and WAS_NODE==true)'
+  tags: passwordChangeForWWRWS

@@ -29,6 +29,6 @@
           with_sequence: start=1 end={{rwsbth_loop|int if rwsbth_loop|int > 0 else rwsbth_loop}}
           when: rwsbth_loop is defined
       when: '(reflexis_rwsbth_jvm_count is defined) and (reflexis_rwsbth_jvm_count|int>0)'
-      tags: changeRARBTHpwd
+      tags: changeRWSBTHpwd
     when: '(WAS_NODE is defined and WAS_NODE==true)'
   tags: passwordChangeForRWS

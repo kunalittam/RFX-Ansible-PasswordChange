@@ -1,0 +1,29 @@
+---
+# Changing Password for WW-RWSOLC JVMs
+- block:
+  - name: Getting JVM Name
+    shell: "ls -l /application/IBM/WASProfiles/servers/ | grep -w {{jvmName}}-inst[0-9][0-9] | egrep '^d' | awk '{print $(NF)}' |grep inst0{{inst}}"
+    register: shellOut
+  - name: Changing Password for {{jvmName|upper}}-INST0{{inst|upper}}
+    shell: |
+      rwsww_NEW_PWD={{ rwsww_pass }}
+      for j in `find /application/IBM/WASProfiles/servers/{{ shellOut.stdout }} -name 'datasource_config.xml' `; do
+        if [ -f $j ]
+        then 
+          cp $j $j.bak;
+          for i in `grep -n rwsww $j | grep -v '!--'| awk -F : '{print $1}'`; do
+            rwswwpassline=`grep -n 'user="rwsww"' $j|  grep -v '!--' |grep ^$i`
+            rwswwTempLine=`echo $rwswwpassline|sed "s/password=\".*\"/password=\""$rwsww_NEW_PWD\""/g"`;
+            sed -i "${i}d" $j;
+            sed  -i "${i}i ${rwswwTempLine}" $j;
+            sed -i "s/^$i://g" $j
+          done
+          echo $j 'file has been updated' ;
+        fi;
+      done
+    register: changeoutput
+
+  - name: Password Change Status
+    debug:
+      msg: "{{ changeoutput.stdout }}"
+  when: '(jvmName is defined and jvmName == "wwrwsolc")'
