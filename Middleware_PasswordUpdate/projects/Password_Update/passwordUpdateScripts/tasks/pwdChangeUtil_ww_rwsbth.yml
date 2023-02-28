@@ -26,4 +26,4 @@
   - name: Password Change Status
     debug:
       msg: "{{ changeoutput.stdout }}"
-  when: '(jvmName is defined and jvmName == "wwrwsbth")'
+  when: '(jvmName is defined and jvmName == "rwsbth")'

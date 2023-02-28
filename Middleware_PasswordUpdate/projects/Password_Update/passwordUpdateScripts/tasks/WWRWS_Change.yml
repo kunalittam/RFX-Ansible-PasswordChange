@@ -9,7 +9,7 @@
           vars:
             - inst: "{{item|int}}"
             - control: change
-            - jvmName: wwrwsolc
+            - jvmName: rwsolc
           with_sequence: start=1 end={{rwsolc_loop|int if rwsolc_loop|int > 0 else rwsolc_loop}}
           when: rwsolc_loop is defined
       when: '(reflexis_rwsolc_jvm_count is defined) and (reflexis_rwsolc_jvm_count|int>0)'
@@ -25,7 +25,7 @@
           vars:
             - inst: "{{item|int}}"
             - control: change
-            - jvmName: wwrwsbth
+            - jvmName: rwsbth
           with_sequence: start=1 end={{rwsbth_loop|int if rwsbth_loop|int > 0 else rwsbth_loop}}
           when: rwsbth_loop is defined
       when: '(reflexis_rwsbth_jvm_count is defined) and (reflexis_rwsbth_jvm_count|int>0)'
