@@ -3,7 +3,7 @@
     - block:
         - set_fact:
             rar_loop: "{{reflexis_rar_jvm_count|int}}"
-        - include_tasks: pwdChangeUtil.ansible.yml
+        - include_tasks: pwdChangeUtil_rar.yml
           vars:
             - inst: "{{item|int}}"
             - control: change

@@ -131,7 +131,10 @@ def skipRemainingStages = false
 def cluster1=""
 pipeline {
     agent{
-        label 'ansible'
+        node {
+            label 'ansible'
+            customWorkspace "${JENKINS_HOME}/workspace/${JOB_BASE_NAME}/${BUILD_NUMBER}"
+        }
     }
     options {
         ansiColor('xterm')
@@ -140,9 +143,6 @@ pipeline {
 
     stages {
         stage('Get variables') {
-            agent{
-                label 'ansible'
-            }
             steps {
                 script {
                     addShortText(border: 0, text: "ENVIRONMENT:-" + ENV_TYPE, background: "azure", color: "black")
@@ -156,6 +156,11 @@ pipeline {
                         cluster1=CLUSTER_NAME
                         CLUSTER_NAME="all"
                         JOB_NAME="myworkPasswordUpdate"
+                    }
+                    else if (Application.contains("WWRWS")){
+                        cluster1=CLUSTER_NAME
+                        CLUSTER_NAME=Application
+                        JOB_NAME="wwrwsPasswordUpdate"
                     }
                     else{
                         CLUSTER_NAME=Application
@@ -176,9 +181,6 @@ pipeline {
         }//stage
 
         stage('Checkout from GitHub') {
-            agent{
-                label 'ansible'
-            }
             when {
                 expression {
                     !skipRemainingStages
@@ -186,7 +188,7 @@ pipeline {
             }
             steps {
                 checkout([$class: 'GitSCM', 
-                branches: [[name: '*/main']], 
+                branches: [[name: '*/test']], 
                 extensions: [[$class: 'RelativeTargetDirectory', 
                 relativeTargetDir: "${WORKSPACE}"], 
                 [$class: 'CleanBeforeCheckout']], 
@@ -194,9 +196,6 @@ pipeline {
             }//steps
         }//stage
         stage ('Get Passwords') {
-            agent{
-                label 'ansible'
-            }
             when {
                 expression {
                     !skipRemainingStages
@@ -206,15 +205,13 @@ pipeline {
                 script {
                     if (! params.PASSWORDS.isEmpty())
                     {
-                        writeFile (file: "passwordtest.yml", text: "${PASSWORDS}")
+                        writeFile (file: ".passwordtest.yml", text: "${PASSWORDS}")
+                        echo "Workspace dir is ${WORKSPACE}"
                     }
                 }
             }
         }
         stage ('Ansible Apply') {
-            agent{
-                label 'ansible'
-            }
             when {
                 expression {
                     !skipRemainingStages
@@ -234,30 +231,17 @@ pipeline {
                 ansiblePlaybook forks: 1000,
                     colorized: true,
                     disableHostKeyChecking: true, 
-                    extras: "-e \" ${extra_vars} \" --extra-vars=@passwordtest.yml ",
+                    extras: "-e \" ${extra_vars} \" --extra-vars=@.passwordtest.yml ",
                     installation: 'ansible', 
                     inventory: '/application/ansible/inventory/${ENV_TYPE}/${CLUSTER_NAME}/${Application}', 
                     playbook: "${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/${playbook}",
                     tags: "${tags}"
             }            
         }
-        stage ('Delete Passwords') {
-            agent{
-                label 'ansible'
-            }
-            when {
-                expression {
-                    !skipRemainingStages
-                }
-            }
-            steps {
-                script {
-                    if (! params.PASSWORDS.isEmpty())
-                    {
-                        sh "rm passwordtest.yml"
-                    }
-                }
-            }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }

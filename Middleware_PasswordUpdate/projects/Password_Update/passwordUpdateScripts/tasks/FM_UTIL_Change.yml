@@ -1,0 +1,27 @@
+---
+- block:
+  - name: Changing Password for FM_UTILITY
+    shell: |
+      if [ -f /mount/cognos/FM_UTIL/config.properties ]
+      then
+        cp /mount/cognos/FM_UTIL/config.properties /mount//cognos/FM_UTIL/config.properties_bkp;
+        pwdLine=`cat /mount/cognos/FM_UTIL/config.properties | grep  database.password | grep -v '#'`;
+        rwsuser=`cat /mount/cognos/FM_UTIL/config.properties | grep  database.user | grep -v '#' | grep rws`;
+        if [ -z "$rwsuser" ] ; then
+                pwdTempLine=`echo $pwdLine| sed "s/password.*/password={{ cogadm_pass }}/g"`;
+        else
+                pwdTempLine=`echo $pwdLine| sed "s/password.*/password={{ rwsadm_pass }}/g"`;
+        fi
+        l1=`cat /mount//cognos/FM_UTIL/config.properties | grep -n database.password | grep -v '#' |awk -F ':' '{print $1}'`;
+        sed -i "${l1}d" /mount/cognos/FM_UTIL/config.properties;
+        sed  -i "${l1}i $pwdTempLine" /mount/cognos/FM_UTIL/config.properties;
+        echo "FM_UTILITY update has been completed"
+      else
+        echo "/mount/cognos/FM_UTIL/config.properties file is not present"
+      fi
+    register: changeoutput
+  - name: Password changed for FM_UTILITY
+    debug:
+      msg: "{{ changeoutput.stdout }}"
+  when: '(COGNOS_MASTER_NODE is defined and COGNOS_MASTER_NODE==true)'
+  tags: passwordChangeForFMUtil
