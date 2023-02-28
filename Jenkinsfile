@@ -124,8 +124,7 @@ properties([
                 ]
             ]
         ],
-        password (defaultValue: 'anything', name: 'rtmadm'),
-        // text(name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the passowrd in single codes'),
+        text(name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the passowrd in single codes'),
     ])
 ])
 def cluster1=""
@@ -190,22 +189,22 @@ pipeline {
                 userRemoteConfigs: [[credentialsId: 'kunalpersonal', url: 'https://github.com/kunalittam/RFX-Ansible-PasswordChange.git']]])
             }//steps
         }//stage
-        // stage ('Get Passwords') {
-        //     steps {
-        //         script {
-        //             if (! params.PASSWORDS.isEmpty())
-        //             {
-        //                 writeFile (file: ".passwordtest.yml", text: "${PASSWORDS}")
-        //                 echo "Workspace dir is ${WORKSPACE}"
-        //             }
-        //         }
-        //     }
-        // }
         stage ('Get Passwords') {
             steps {
-                input message: "Please create .passwordtest.yml in ${WORKSPACE}", ok: 'Created'
+                script {
+                    if (! params.PASSWORDS.isEmpty())
+                    {
+                        writeFile (file: ".passwordtest.yml", text: "${PASSWORDS}")
+                        echo "Workspace dir is ${WORKSPACE}"
+                    }
+                }
             }
         }
+        // stage ('Get Passwords') {
+        //     steps {
+        //         input message: "Please create .passwordtest.yml in ${WORKSPACE}", ok: 'Created'
+        //     }
+        // }
         stage ('Ansible Apply') {
             steps {
                 script {
