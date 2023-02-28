@@ -202,7 +202,7 @@ pipeline {
         // }
         stage ('Get Passwords') {
             steps {
-                input message: 'Please create .passwordtest.yml in '${WORKSPACE}'', ok: 'Created'
+                input message: "Please create .passwordtest.yml in ${WORKSPACE}", ok: 'Created'
             }
         }
         stage ('Ansible Apply') {
