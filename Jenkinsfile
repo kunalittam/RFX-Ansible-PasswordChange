@@ -124,7 +124,7 @@ properties([
                 ]
             ]
         ],
-        text{name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the password in single codes'},
+        text(name: 'PASSWORDS', defaultValue: 'rtmadm: \'rtmadm_pass\'', description: 'Please enter the password in single codes'),
 
     ])
 ])
