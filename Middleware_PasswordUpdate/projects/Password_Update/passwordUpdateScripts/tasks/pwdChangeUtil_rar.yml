@@ -10,7 +10,7 @@
         if [ -f $j ]
         then 
           cp $j $j.bak_`date +%d%b%Y%H%M%S`;
-          if [ -n {{ rtmadm_pass }} ]
+          if [ -n "{{ rtmadm_pass }}" ]
           then
             rtmadm_NEW_PWD={{ rtmadm_pass }};
             for i in `grep -n rtmadm $j | grep -v '!--' |awk -F : '{print $1}'`; do
@@ -22,7 +22,7 @@
               sed -i "s/^$i://g" $j
             done
           fi;
-          if [ -n {{ cogadm_pass }} ]
+          if [ -n "{{ cogadm_pass }}" ]
           then
             cogadm_NEW_PWD={{ cogadm_pass }}
             for i in `grep -n cogadm $j | grep -v '!--' | awk -F : '{print $1}'`; do
@@ -34,7 +34,7 @@
               sed -i "s/^$i://g" $j
             done
           fi;
-          if [ -n {{ cogadm_pass }} ]
+          if [ -n "{{ rwsuser_pass }}" ]
           then
             rwsuser_NEW_PWD={{ rwsuser_pass }}
             for i in `grep -n rwsuser $j| grep -v '!--' | awk -F : '{print $1}'`; do
@@ -46,7 +46,7 @@
               sed -i "s/^$i://g" $j
             done
           fi;
-          if [ -n {{ cogadm_pass }} ]
+          if [ -n "{{ rwsadm_pass }}" ]
           then
             rwsadm_NEW_PWD={{ rwsadm_pass }}
             for i in `grep -n rwsadm $j | grep -v '!--' | awk -F : '{print $1}'`; do
