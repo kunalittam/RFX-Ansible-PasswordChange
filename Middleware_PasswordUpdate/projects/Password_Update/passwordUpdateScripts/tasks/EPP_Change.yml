@@ -4,7 +4,7 @@
     shell: |
       if [ -f /mount/DBConfig/EPP.properties ]
       then
-        cp  /mount/DBConfig/EPP.properties /mount/DBConfig/EPP.properties_bkp;
+        cp  /mount/DBConfig/EPP.properties /mount/DBConfig/EPP.properties_bkp_`date +%d%b%Y%H%M%S`;
         l1=`grep -n 'raa.export-db.password' /mount/DBConfig/EPP.properties  |awk -F ':' '{print $1}'`;
         cogadmTempLine="raa.export-db.password={{ cogadm_pass }}";
         sed -i "${l1}d"  /mount/DBConfig/EPP.properties;

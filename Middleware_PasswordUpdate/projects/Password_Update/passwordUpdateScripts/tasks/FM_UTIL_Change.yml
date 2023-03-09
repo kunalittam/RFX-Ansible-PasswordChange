@@ -4,7 +4,7 @@
     shell: |
       if [ -f /mount/cognos/FM_UTIL/config.properties ]
       then
-        cp /mount/cognos/FM_UTIL/config.properties /mount//cognos/FM_UTIL/config.properties_bkp;
+        cp /mount/cognos/FM_UTIL/config.properties /mount//cognos/FM_UTIL/config.properties_bkp_`date +%d%b%Y%H%M%S`;
         pwdLine=`cat /mount/cognos/FM_UTIL/config.properties | grep  database.password | grep -v '#'`;
         rwsuser=`cat /mount/cognos/FM_UTIL/config.properties | grep  database.user | grep -v '#' | grep rws`;
         if [ -z "$rwsuser" ] ; then

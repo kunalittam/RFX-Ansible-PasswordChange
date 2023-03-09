@@ -10,6 +10,7 @@
       for i in `find /application/IBM/WASProfiles/servers/{{ shellOut.stdout }} -name 'datasource_config.xml' `; do
       if [ -f $i ]
       then
+      cp $i $i.bak_`date +%d%b%Y%H%M%S`;
       rwsadm_passline=`grep 'id="rwsUserInfo"' $i | grep  -v '!--'`;
       l1=`grep -n 'id="rwsUserInfo"' $i |  grep -v '!--' |awk -F ':' '{print $1}'`;
       rwsTempLine=`echo $rwsadm_passline|sed "s/password=\".*\"/password=\""$rwsadm_NEW_PWD\""/g"`;

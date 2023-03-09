@@ -4,7 +4,7 @@
     shell: |
       for i in `ls /mount/DBConfig/*.properties`
       do
-        cp $i $i.bak;
+        cp $i $i.bak_`date +%d%b%Y%H%M%S`;
         rfxLine=`grep rfxappuser $i | grep -v '#'`
         if [ ! -z $rfxLine ]
         then

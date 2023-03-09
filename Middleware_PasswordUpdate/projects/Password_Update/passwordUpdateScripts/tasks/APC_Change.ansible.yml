@@ -4,7 +4,7 @@
     shell: |
       # /application/IBM/cognos/analytics/bin64/cogconfig.sh -e /tmp/cogstartup.xml_new;
       if [ -f /tmp/cogstartup.xml_new ]; then
-              cp /tmp/cogstartup.xml_new /application/IBM/cognos/analytics/configuration/cogstartup.xml_bkp;
+              cp /tmp/cogstartup.xml_new /application/IBM/cognos/analytics/configuration/cogstartup.xml_bkp_`date +%d%b%Y%H%M%S`;
               l1=`cat /tmp/cogstartup.xml_new|grep -nA1 coguser|grep password|awk -F ':' '{print $1}'`
               sed -i "${l1}s/`cat /tmp/cogstartup.xml_new|grep -A1 coguser|grep password|awk -F '>' '{print $2}'|awk -F '<' '{print $1}'`/{{ coguser_pass }}/g" /tmp/cogstartup.xml_new;
               l2=`cat /tmp/cogstartup.xml_new|grep -nA1 auduser|grep password|awk -F ':' '{print $1}'`
