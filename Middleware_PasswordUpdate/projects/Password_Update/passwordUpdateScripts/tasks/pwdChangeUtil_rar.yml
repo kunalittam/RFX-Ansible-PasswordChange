@@ -6,10 +6,6 @@
     register: shellOut
   - name: Changing Password for {{jvmName|upper}}-INST0{{inst|upper}}
     shell: |
-      rtmadm_NEW_PWD={{ rtmadm_pass }}
-      cogadm_NEW_PWD={{ cogadm_pass }}
-      rwsuser_NEW_PWD={{ rwsuser_pass }}
-      rwsadm_NEW_PWD={{ rwsadm_pass }}
       for j in `find /application/IBM/WASProfiles/servers/{{ shellOut.stdout }} -name 'datasource_config.xml' `; do
         if [ -f $j ]
         then 
