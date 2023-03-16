@@ -1,0 +1,254 @@
+properties([
+    parameters([
+        [$class: 'ChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            filterable: false,
+            name: 'JobName',
+            script: [$class: 'GroovyScript',
+                fallbackScript: [ classpath: [], sandbox: true, script: 'return ["ERROR"]' ],
+                script: [
+                    classpath: [],
+                    sandbox: true,
+                    script: """
+                        def build = Thread.currentThread().getName()
+                        def regexp= ".+?/job/([^/]+)/.*"
+                        def match = build  =~ regexp
+                        def jobName = match[0][1]
+                        def parts = jobName.split('_');
+                        return [jobName]
+                    """.stripIndent()
+                ]
+            ]
+        ],
+        string(description: 'Enter the SNOW TICKET Number', name: 'SNOWTICKET', defaultValue: ''),
+        
+        [
+            $class: 'CascadeChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            description: 'Select the Cluster',
+            referencedParameters: 'SNOWTICKET,JobName',
+            name: 'ENV_TYPE',
+            script: [
+                $class: 'GroovyScript',
+                fallbackScript: [
+                    classpath: [],
+                    sandbox: true,
+                    script: 'return ["ERROR"]'
+                ],
+                script: [
+                    classpath: [],
+                    sandbox: true,
+                    script:  
+                    '''
+                      import groovy.io.FileType
+                      if (SNOWTICKET.isEmpty() || SNOWTICKET==""){
+                        return ''
+                      }
+                      else
+                      {
+                        def parts = JobName.split('_');
+                        if(parts.length > 2){
+                            return [parts[2]]
+                        } else {
+                            def list = []
+                            list.add('')
+                            def dir = new File("/application/ansible/inventory/")
+                            dir.eachFile (FileType.DIRECTORIES) { file ->
+                                list << file.name
+                            }
+                            return list.sort() - 'group_vars' - null - ''
+                        }
+                      }
+                    '''
+                ]
+            ]
+        ],
+        [
+            $class: 'CascadeChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            description: 'Select the Cluster',
+            referencedParameters: 'ENV_TYPE,SNOWTICKET,JobName',
+            name: 'CLUSTER_NAME',
+            script: [
+                $class: 'GroovyScript',
+                fallbackScript: [
+                    classpath: [],
+                    sandbox: true,
+                    script: 'return ["ERROR"]'
+                ],
+                script: [
+                    classpath: [],
+                    sandbox: true,
+                    script:  
+                    '''                    
+                        import groovy.io.FileType
+                        if (ENV_TYPE.isEmpty() || ENV_TYPE==""){
+                        return ''
+                        }
+                        else
+                        {  
+                            def parts = JobName.split('_');
+                            if(parts.length > 3){
+                                return [parts[3]]
+                            }
+                            else{
+                                def list = []
+                                list.add('')
+                                def dir = new File("/application/ansible/inventory/${ENV_TYPE}/")
+                                dir.eachFile (FileType.DIRECTORIES) { file ->
+                                    list << file.name
+                                }
+                                return list.sort() - 'group_vars'  - null - ''
+                            }
+                        }
+                        
+                    '''
+                ]
+            ]
+        ],
+        [
+            $class: 'CascadeChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            description: '',
+            referencedParameters: 'CLUSTER_NAME, ENV_TYPE, SNOWTICKET, JobName',
+            name: 'Application',
+            script: [
+                $class: 'GroovyScript',
+                fallbackScript: [
+                    classpath: [],
+                    sandbox: true,
+                    script: 'return ["ERROR"]'
+                ],
+                script: [
+                    classpath: [],
+                    sandbox: true,
+                    script:  
+                    '''
+                        import groovy.io.FileType
+                        if (CLUSTER_NAME.isEmpty() || CLUSTER_NAME==""){
+                            return ''
+                        } 
+                        else {   
+                            def parts = JobName.split('_');
+                            if(parts.length > 4){
+                                return [parts[4]]
+                            } else {
+                                def list = []
+                                list.add('')
+                                def dir = new File("/application/ansible/inventory/${ENV_TYPE}/${CLUSTER_NAME}")
+                                dir.eachFile (FileType.FILES) { file ->
+                                    list << file.name.replaceAll('.yml','');
+                                }
+                                return list  - null - ''
+                            }
+                        }
+                        
+                    '''
+                ]
+            ]
+        ],
+        text(name: 'PASSWORDS', defaultValue: 'rtmadm_pass: \'PasswordForRTMADM\'', description: 'Please enter the passowrd in single codes'),
+    ])
+])
+def cluster1=""
+pipeline {
+    agent{
+        node {
+            label 'ansible'
+            customWorkspace "${JENKINS_HOME}/workspace/${JOB_BASE_NAME}/${BUILD_NUMBER}"
+        }
+    }
+    options {
+        ansiColor('xterm')
+        skipDefaultCheckout(true)
+    }
+
+    stages {
+        stage('Get variables') {
+            steps {
+                script {
+                    addShortText(border: 0, text: "ENVIRONMENT:-" + ENV_TYPE, background: "azure", color: "black")
+                    addShortText(border: 0, text: "CLUSTER_NAME:-" + CLUSTER_NAME, background: "beige", color: "black")                    
+                    if (Application.contains("KERNEL")){
+                        cluster1=CLUSTER_NAME
+                        CLUSTER_NAME="all"
+                        JOB_NAME="kernelPasswordUpdate"
+                    }
+                    else if (Application.contains("MYWORK")){
+                        cluster1=CLUSTER_NAME
+                        CLUSTER_NAME="all"
+                        JOB_NAME="myworkPasswordUpdate"
+                    }
+                    else if (Application.contains("WWRWS")){
+                        cluster1=CLUSTER_NAME
+                        CLUSTER_NAME=Application
+                        JOB_NAME="wwrwsPasswordUpdate"
+                    }
+                    else{
+                        CLUSTER_NAME=Application
+                        JOB_NAME="rwsPasswordUpdate"
+                    }
+                    
+                    tags=JOB_NAME
+                    playbook="runPasswordUpdate.yml"
+                    extra_vars="CLUSTER_NAME=${CLUSTER_NAME}"
+
+                addShortText(border: 0, text: "Application:-" + Application, background: "bisque", color: "black")
+                if ( ! params.SNOWTICKET.isEmpty()){
+                    addShortText(border: 0, text: "SNOWTICKET:-" + SNOWTICKET, background: "green", color: "black")
+                }   
+                
+                }//script
+            }//steps
+        }//stage
+
+        stage('Checkout from GitHub') {
+            steps {
+                checkout([$class: 'GitSCM', 
+                branches: [[name: '*/test']], 
+                extensions: [[$class: 'RelativeTargetDirectory', 
+                relativeTargetDir: "${WORKSPACE}"], 
+                [$class: 'CleanBeforeCheckout']], 
+                userRemoteConfigs: [[credentialsId: 'kunalpersonal', url: 'https://github.com/kunalittam/RFX-Ansible-PasswordChange.git']]])
+            }//steps
+        }//stage
+        stage ('Get Passwords') {
+            steps {
+                script {
+                    if (! params.PASSWORDS.isEmpty())
+                    {
+                        writeFile (file: ".password.yml", text: "${PASSWORDS}")
+                    }
+                }
+            }
+        }
+        stage ('Ansible Apply') {
+            steps {
+                script {
+                if ( ! extra_vars.isEmpty()){
+                    log.info("extra vars =  ${extra_vars}")
+                }
+                }
+                log.info("SNOWTICKET = ${SNOWTICKET}")
+                log.info("CLUSTER_NAME =  ${CLUSTER_NAME}")
+                log.info("Application =  ${Application}")
+                log.info("tags =  ${tags}")
+                log.info("playbook = ${playbook}")
+                ansiblePlaybook forks: 1000,
+                    colorized: true,
+                    disableHostKeyChecking: true, 
+                    extras: "-e \" ${extra_vars} \" --extra-vars=@.passwordtest.yml ",
+                    installation: 'ansible', 
+                    inventory: '/application/ansible/inventory/${ENV_TYPE}/${CLUSTER_NAME}/${Application}', 
+                    playbook: "${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/${playbook}",
+                    tags: "${tags}"
+            }            
+        }
+
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
