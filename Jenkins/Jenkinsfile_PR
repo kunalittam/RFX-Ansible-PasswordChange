@@ -217,7 +217,7 @@ pipeline {
                 script {
                     sh """
 				        set +x
-                        echo $Password_File | base64 -d > .password.yml
+                        echo $Password_File | base64 -d > ${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/group_vars/.userInfo.yml
                     """
                 }
             }
@@ -238,7 +238,7 @@ pipeline {
                 ansiblePlaybook forks: 1000,
                     colorized: true,
                     disableHostKeyChecking: true, 
-                    extras: "-e \" ${extra_vars} \" --extra-vars=@.password.yml ",
+                    extras: "-e \" ${extra_vars} \"",
                     installation: 'ansible', 
                     inventory: '/application/ansible/inventory/${ENV_TYPE}/${CLUSTER_NAME}/${Application}', 
                     playbook: "${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/${playbook}",
