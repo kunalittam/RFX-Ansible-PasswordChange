@@ -228,12 +228,13 @@ pipeline {
                 if ( ! extra_vars.isEmpty()){
                     log.info("extra vars =  ${extra_vars}")
                 }
+                    log.info("SNOWTICKET = ${SNOWTICKET}")
+                    log.info("CLUSTER_NAME =  ${CLUSTER_NAME}")
+                    log.info("Application =  ${Application}")
+                    log.info("tags =  ${tags}")
+                    log.info("playbook = ${playbook}")
                 }
-                log.info("SNOWTICKET = ${SNOWTICKET}")
-                log.info("CLUSTER_NAME =  ${CLUSTER_NAME}")
-                log.info("Application =  ${Application}")
-                log.info("tags =  ${tags}")
-                log.info("playbook = ${playbook}")
+                
                 ansiblePlaybook forks: 1000,
                     colorized: true,
                     disableHostKeyChecking: true, 
