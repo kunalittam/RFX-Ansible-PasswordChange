@@ -147,7 +147,7 @@ properties([
                 ]
             ]
         ],
-        text(name: 'PASSWORDS', defaultValue: 'rtmadm_pass: \'PasswordForRTMADM\'', description: 'Please enter the passowrd in single codes'),
+        base64File (description: 'Please update the file with passwords', name: 'Password_File'),
     ])
 ])
 def cluster1=""
@@ -215,10 +215,10 @@ pipeline {
         stage ('Get Passwords') {
             steps {
                 script {
-                    if (! params.PASSWORDS.isEmpty())
-                    {
-                        writeFile (file: ".password.yml", text: "${PASSWORDS}")
-                    }
+                    sh """
+				        set +x
+                        echo $Password_File | base64 -d > .password.yml
+                    """
                 }
             }
         }
