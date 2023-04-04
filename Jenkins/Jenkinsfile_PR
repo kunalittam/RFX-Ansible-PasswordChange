@@ -185,8 +185,13 @@ pipeline {
                         JOB_NAME="wwrwsPasswordUpdate"
                     }
                     else{
-                        CLUSTER_NAME=Application
-                        JOB_NAME="rwsPasswordUpdate"
+                        if (Application == CLUSTER_NAME){
+                            JOB_NAME="allPasswordUpdate"
+                        }
+                        else{
+                            CLUSTER_NAME=Application
+                            JOB_NAME="rwsPasswordUpdate"
+                        }
                     }
                     
                     tags=JOB_NAME
@@ -217,7 +222,7 @@ pipeline {
                 script {
                     sh """
 				        set +x
-                        echo $Password_File | base64 -d > ${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/group_vars/.userInfo.yml
+                        echo $Password_File | base64 -d > .userInfo.yml
                     """
                 }
             }
@@ -238,7 +243,7 @@ pipeline {
                 ansiblePlaybook forks: 1000,
                     colorized: true,
                     disableHostKeyChecking: true, 
-                    extras: "-e \" ${extra_vars} \"",
+                    extras: "-e \" ${extra_vars} \" --extra-vars=@.userInfo.yml ",
                     installation: 'ansible', 
                     inventory: '/application/ansible/inventory/${ENV_TYPE}/${CLUSTER_NAME}/${Application}', 
                     playbook: "${WORKSPACE}/Middleware_PasswordUpdate/projects/Password_Update/${playbook}",
